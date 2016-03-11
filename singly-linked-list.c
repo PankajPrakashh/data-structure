@@ -1,576 +1,760 @@
-/*************************************************************************
- * Description  : Singly Linked list implementation and operations in C
- *                Basic Operations on singly linked list includes:
- *                  1) Creation of list
- *                  2) Traversal of list
- *                  3) Insertion of new node in list
- *                  4) Deletion of node from the list
- *                  5) Counting total number of nodes
- *                  6) Reversing of list
- * Author       : Pankaj Prakash (pankajprakashh)
- * Website      : http:\\codeforwin.blogspot.in\
- * Last updated : 29 August 2015 09:04 AM
- **************************************************************************/
-
+/**
+ * @author          Pankaj Prakash
+ * @website         http://www.codeforwin.in/
+ * @lastmodified    March 10, 2016
+ * @description     C program to implement all operations of a singly linked 
+ *                  list. Basic operations performed on a singly linked list are:
+ *                  1.  Creation
+ *                  2.  Insertion at beginning
+ *                  3.  Insertion at end
+ *                  4.  Insertion at any position
+ *                  5.  Deletion from beginning
+ *                  6.  Deletion from end
+ *                  7.  Deletion from any position
+ *                  8.  List traversal or display contents
+ *                  9.  Count number of elements
+ *                  10. Search element in list
+ *                  11. Reverse entire list
+ *                  12. Sort elements of the list 
+ -----------------------------------------------------------------------------*/
+ 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SUCCESS 0x00
-#define ERROR 0xff
-#define OUT_OF_MEMORY 0xfe
-#define LIST_IS_EMPTY 0x01
 
 /*
- * Node structure of the Singly Linked list
+ * Basic structure of the node in list.
  */
 typedef struct node {
-    int data;
-    struct node * next;
-}SinglyLinkedList;
-
-SinglyLinkedList * head;
+   int data;
+   struct node *next;
+}node; 
+ 
+ 
+ 
 
 /*
- * Operations performed on a singly linked list
+ * Function declarations 
  */
-int createNewList();
-void printList();
-int insertAtBeginning(int data);
-int insertAtEnd(int data);
-int insertAtN(int position, int data);
-int deleteList();
-int deleteAtBeginning();
-int deleteAtEnd();
-int deleteAtN(int position);
-long count();
-int reverseList();
+node * createList(int);
+void insertAtBeginning(node **, int);
+void insertAtEnd(node **, int);
+void insertAtN(node **, int, int);
+int  deleteFirst(node **);
+int  deleteLast(node **);
+int  deleteAtN(node **, int);
+void deleteAll(node **);
+void displayList(node **);
+int  count(node **);
+int  search(node **, int);
+void reverseList(node **);
+void sortList(node **);
 
-void clrscr();
 
+
+
+
+/**
+ * Program starts from here.
+ */
 int main()
 {
-    int choice, data, position, result;
-
+    int choice, position, data, result;
+    char confirm;
+    node *head = NULL;    
+    
+    //Runs indefinitely till user chooses to exit 
     while(1)
     {
-        clrscr();
-
-        printf("=================================================\n");
-        printf("    WELCOME TO THE SINGLY LINKED LIST PROGRAM    \n");
-        printf("=================================================\n");
-        printf("Operations performed on a singly linked list\n");
-        printf("-------------------------------------------------\n");
-        printf("1. Create a new list\n");
-        printf("2. Insert an element - at beginning of list\n");
-        printf("3. Insert an element - at end of list\n");
-        printf("4. Insert an element - at n position\n");
-        printf("5. Delete an element - at beginning of list\n");
-        printf("6. Delete an element - at end of list\n");
-        printf("7. Delete an element - at n position\n");
-        printf("8. Delete entire list\n");
-        printf("9. Count total elements\n");
-        printf("10.Reverse order of list\n");
-        printf("11.Print entire list\n");
-        printf("0. Exit Program\n");
-        printf("---------------------------------------------------\n");
-        printf("Enter your choice : ");
-
+        system("clear");
+        
+        printf("    WELCOME TO SINGLY LINKED LIST PROGRAM\n");
+        printf("---------------------------------------------\n");
+        printf("  1. Create list\n");
+        printf("  2. Insert node at beginning \n");
+        printf("  3. Insert node at end \n");
+        printf("  4. Insert node at n \n");
+        printf("  5. Delete first node \n");
+        printf("  6. Delete last node \n");
+        printf("  7. Delete node at n \n");
+        printf("  8. Clear list \n");
+        printf("  9. Display list \n");
+        printf(" 10. Count nodes \n");
+        printf(" 11. Search in list \n");
+        printf(" 12. Reverse list \n");
+        printf(" 13. Sort list \n");
+        printf(" 00. Exit program \n");
+        printf("---------------------------------------------\n");
+        printf(" Enter your choice : ");
+        
         scanf("%d", &choice);
-
+        getchar(); //To eliminate new line entry by scanf(); 
+        
+        
+        printf("\n\n---------------------------------------------\n");
         switch(choice)
         {
-            //Create New list
-            case 1:
-                result = createNewList();
-                if(result == SUCCESS)
+            case  1: //Creation of node
+                printf("How many nodes you want to create: ");
+                scanf("%d", &data);
+                
+                //Operation function call
+                head = createList(data);
+                
+                break;
+                
+            case  2: //Insert at beginning
+                printf("Enter value of first node: ");
+                scanf("%d", &data);
+                
+                //Operation function call
+                insertAtBeginning(&head, data);
+                break;
+                
+            case  3: //Insert at end
+                printf("Enter value of last node: ");
+                scanf("%d", &data);
+                
+                //Operation function call
+                insertAtEnd(&head, data);
+                
+                break;
+                
+            case  4: //Insert at n
+                printf("Where exactly you want to insert new node: ");
+                scanf("%d", &position);
+                printf("Enter data of %d node: ", position);
+                scanf("%d", &data);
+                
+                //Operation function call
+                insertAtN(&head, position, data);
+                
+                break;
+                
+            case  5: //Delete first
+                printf("\nARE YOU SURE TO DELETE FIRST NODE (y/n): ");
+                confirm = getchar();
+                
+                if(confirm =='y' || confirm == 'Y')
                 {
-                    printf("List created successfully\n");
-                    printf("Enter the data of first node: ");
-                    scanf("%d", &head->data);
+                    //Operation function call
+                    result = deleteFirst(&head);
+                    printf("Freed %d from memory\n", result); 
+                }
+                
+                break;
+                
+            case  6: //Delete last
+                printf("\nARE YOU SURE TO DELETE LAST NODE (y/n): ");
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
+                {
+                    //Operation function call
+                    result = deleteLast(&head);
+                    printf("Freed %d from memory\n", result);
+                }
+                
+                break;
+                
+            case  7: //Delete at n
+                printf("Which node you want to delete: ");
+                scanf("%d", &position);
+                getchar(); //Avoid the newline entry
+                
+                printf("\nARE YOU SURE TO DELETE %d NODE (y/n): ", position);
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
+                {
+                    //Operation function call
+                    result = deleteAtN(&head, position);
+                    printf("Freed %d from memory\n", result);
+                }
+                
+                break;
+                
+            case  8: //Clear list
+                printf("\nTHIS OPERATION WILL DELETE ALL NODES. ARE YOU SURE TO DELETE (y/n): ");
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
+                {
+                    //Operation function call
+                    deleteAll(&head);
+                }
+                
+                break;
+                
+            case  9: //Display list
+            
+                //Operation function call
+                displayList(&head);
+                
+                break;
+                
+            case 10: //Count nodes
+            
+                //Operation function call
+                result = count(&head);
+                printf("\nTotal number of nodes in list is: %d\n", result);
+                
+                break;
+                
+            case 11: //Search in list
+                printf("What are you looking for in list: ");
+                scanf("%d", &data);
+                
+                //Operation function call
+                result = search(&head, data);
+                
+                if(result == -1)
+                {
+                    printf("Ummm! looks as %d does not exists in list.\n", data);
                 }
                 else
                 {
-                    printf("\nList is not empty first delete all elements.");
+                    printf("Yeah, %d is present at %d position.\n", data, result);
                 }
+                
                 break;
-
-            //Insert new node at beginning of list
-            case 2:
-                printf("\nEnter node data: ");
-                scanf("%d", &data);
-
-                result = insertAtBeginning(data);
-                if(result == SUCCESS)
+                
+            case 12: //Reverses list
+                printf("\nTHIS OPERATION WILL REVERSE THE ORDER OF LIST. SURE TO CONTINUE (y/n): ");
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
                 {
-                    printf("\nData inserted successfully at the beginning of list.");
+                    //Operation function call
+                    reverseList(&head);
                 }
-                else if(result == OUT_OF_MEMORY)
-                {
-                    printf("\nSort of memory. Create allocate new memory");
-                }
+                
                 break;
-
-            //Insert new node at end of list
-            case 3:
-                printf("\nEnter node data: ");
-                scanf("%d", &data);
-
-                result = insertAtEnd(data);
-                if(result == SUCCESS)
+                
+            case 13: //Sorts list
+                printf("\nARE YOU SURE TO SORT LIST IN ASCENDING ORDER (y/n): ");
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
                 {
-                    printf("\nData inserted successfully at the end of list.");
+                    //Operation function call
+                    sortList(&head);
                 }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nList is empty. Please first create list.");
-                }
+                
                 break;
-
-            //Insert new node at n position
-            case 4:
-                printf("\nEnter position where you want to insert new node: ");
-                scanf("%d", &position);
-                printf("\nEnter node data: ");
-                scanf("%d", &data);
-                result = insertAtN(position, data);
-
-                if(result == SUCCESS)
+                
+            case  0: //Exits program
+                printf("\nREALLY YOU WANT TO QUIT ME (y/n): ");
+                confirm = getchar();
+                
+                if(confirm == 'y' || confirm == 'Y')
                 {
-                    printf("\nData inserted successfully.");
+                    //Operation function call
+                    deleteAll(&head);
+                    
+                    exit(0);
                 }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nList is empty. Please first create list.");
-                }
+                
                 break;
-
-            //Delete node from beginning of list
-            case 5:
-                result = deleteAtBeginning();
-                if(result == SUCCESS)
-                {
-                    printf("\nSuccessfully deleted node from list.");
-                }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nList is empty. Please first create list.");
-                }
-                break;
-
-            //Delete node from end of the list
-            case 6:
-                result = deleteAtEnd();
-                if(result == SUCCESS)
-                {
-                    printf("\nSuccessfully deleted node from list.");
-                }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nList is empty. Please first create list");
-                }
-                break;
-
-            //Delete node from n position of the list
-            case 7:
-                printf("\nEnter node position to delete: ");
-                scanf("%d", &position);
-
-                result = deleteAtN(position);
-                if(result == SUCCESS)
-                {
-                    printf("\nSuccessfully deleted node from list");
-                }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nList is empty. Please first create list");
-                }
-                break;
-
-            //Deletes entire nodes from the list
-            case 8:
-                result = deleteList();
-                if(result == SUCCESS)
-                {
-                    printf("\nSuccessfully deleted entire list.");
-                }
-                else if(result == ERROR)
-                {
-                    printf("\nSomething went wrong while deleting entire list.");
-                }
-                break;
-
-            //Counts total number of nodes in list
-            case 9:
-                printf("\nTotal number of elements in list = %ld", count());
-                break;
-
-            //Reverse the order of entire list.
-            case 10:
-                result = reverseList();
-                if(result == SUCCESS)
-                {
-                    printf("\nSuccessfully reversed order of list.");
-                }
-                else if(result == LIST_IS_EMPTY)
-                {
-                    printf("\nCan't reverse an empty list.");
-                }
-                break;
-
-            //Prints entire list
-            case 11:
-                printList();
-                break;
-
-            //Exits from program
-            case 0:
-                if(head != NULL)
-                    deleteList();
-
-                exit(SUCCESS);
-            break;
-
-            //Invalid input
-            default:
-                printf("\nInvalid input please enter again.\n");
+                
+            default: //Invalid choices
+                printf("Looks as you didn't choose correct option.\n");
+                printf("Please read menu carefully and try again. \n");
         }
-
-        printf("\n");
-        system("pause");
+        
+        
+        getchar(); //To eliminate new lines
+        printf("\n---------------------------------------------\n");
+        printf(" Press any key to continue...");
+        getchar();
     }
-
+    
+    
     return 0;
 }
 
-/*
- * Clears the console screen
- */
-void clrscr()
-{
-    system("cls");
-}
 
-/*
- * Creates a empty Linked list
+
+
+
+/**
+ * Creates a list of n nodes. 
+ * @totalNodes Total number of nodes in the list.
+ * @returns On success returns pointer to the head node otherwise returns NULL.
  */
-int createNewList()
+node * createList(int totalNodes)
 {
-    if(head==NULL)
+    int i;
+    node *head, *newNode, *temp;
+    
+    if(totalNodes >= 1)
     {
-        head = (SinglyLinkedList *)malloc(sizeof(SinglyLinkedList));
+        head = (node *)malloc(sizeof(node)); //Allocates memory
         head->next = NULL;
-
-        return SUCCESS;
+        
+        printf("Enter data of 1 node: ");
+        scanf("%d", &head->data);
+        
+        temp = head;
+        for(i=2; i<=totalNodes; i++)
+        {
+            newNode = (node *)malloc(sizeof(node));
+            newNode->next = NULL;
+            
+            printf("Enter data of %d node: ", i);
+            scanf("%d", &newNode->data);
+            
+            //Links previous node with newly created node
+            temp->next = newNode;
+            temp = temp->next;
+        }
+        
+        printf("\nYeah! list with %d nodes created successfully.\n", totalNodes);
+        
+        return head;
     }
-
-    return ERROR;
-}
-
-/*
- * Prints all data of the list from beginning
- */
-void printList()
-{
-    SinglyLinkedList * temp;
-    int count = 1;
-
-    /*
-     * Checks if the list is empty
-     */
-    if(head == NULL)
+    else 
     {
-        printf("\nList is empty. Please first create a list.");
-        return;
-    }
-
-    temp = head;
-
-    printf("\nDATA IN LIST\n");
-    printf("============\n");
-    while(temp!=NULL)
-    {
-        printf("Data %d = %d\n", count, temp->data);
-        printf("----------------------\n\n");
-
-        count++;
-        temp = temp->next;
+        printf("\nOops! I am sorry, I can't create such node.\n");
+        return NULL;
     }
 }
 
-/*
- * Insert a node at the beginning of the list
+
+
+
+
+/**
+ * Inserts a node at the beginning of the singly linked list.
+ * @head Pointer to node pointing at first node of the list
+ * @data Data added to the newly created node.
  */
-int insertAtBeginning(int data)
+void insertAtBeginning(node ** head, int data)
 {
-    SinglyLinkedList * newNode;
-
-    /*
-     * Creates a new node and adds at the beginning of list
-     */
-    newNode = (SinglyLinkedList *)malloc(sizeof(SinglyLinkedList));
-    if(newNode != NULL)
+    node *newNode = NULL;
+    
+    if(*head == NULL)
     {
-        newNode->next = head;
-        newNode->data = data;
-
-        head = newNode;
-
-        return SUCCESS;
-    }
-
-    return OUT_OF_MEMORY;
-}
-
-/*
- * Inserts a node at the end of the list
- */
-int insertAtEnd(int data)
-{
-    SinglyLinkedList *newNode, *lastNode;
-
-    /*
-     * Checks if the list is empty
-     */
-    if(head == NULL)
+        printf("\nOops! looks as the list is empty. Please first create list.\n");
+    }   
+    else
     {
-        return LIST_IS_EMPTY;
-    }
-
-    lastNode = head;
-    while(lastNode->next != NULL)
-    {
-        lastNode = lastNode->next;
-    }
-
-    /*
-     * Creates a new node and adds at the end of list
-     */
-    newNode = (SinglyLinkedList *)malloc(sizeof(SinglyLinkedList));
-    if(newNode != NULL)
-    {
-        newNode->data = data;
+        newNode = (node *)malloc(sizeof(node));
         newNode->next = NULL;
-
-        lastNode->next = newNode;
-
-        return SUCCESS;
-    }
-
-    return OUT_OF_MEMORY;
-}
-
-/*
- * Inserts a new node at the specified position
- */
-int insertAtN(int position, int data)
-{
-    SinglyLinkedList *newNode, *temp;
-    int count;
-
-    /*
-     * Checks if the list is empty
-     */
-    if(head == NULL)
-    {
-        return LIST_IS_EMPTY;
-    }
-
-    /*
-     * If the position is 1 then insert the new node at the beginning of list
-     */
-    if(position == 1)
-    {
-        return insertAtBeginning(data);
-    }
-
-    temp = head;
-
-    for(count=1; count<position-1 && temp!=NULL; count++)
-    {
-        temp = temp->next;
-    }
-
-    /*
-     * Creates a new node and adds to N position in the list
-     */
-    newNode = (SinglyLinkedList *)malloc(sizeof(SinglyLinkedList));
-    if(newNode != NULL)
-    {
         newNode->data = data;
-        newNode->next = temp->next;
+        
+        newNode->next = *head;
+        *head = newNode;
+        
+        printf("\nYeah! node added successfully at begninning of the list.\n");
+    }
+}
+
+
+
+
+
+/**
+ * Inserts a node at the end of the singly linked list.
+ * @head Pointer to node pointing at first node of the list
+ * @data Data to be added at the end of list.
+ */
+void insertAtEnd(node ** head, int data)
+{
+    node *newNode, *temp;
+    
+    if(*head == NULL)
+    {
+        printf("\nOops! looks list the list is empty. Please first create list.\n");
+    }
+    else
+    {
+        newNode = (node *)malloc(sizeof(node));
+        newNode->next = NULL;
+        newNode->data = data;
+        
+        //Move to the end of list
+        temp = *head;
+        while(temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        
         temp->next = newNode;
-
-        return SUCCESS;
+        
+        printf("\nYeah! successfully added node at the end of list.\n");
     }
-
-    return OUT_OF_MEMORY;
 }
 
-/*
- * Deletes entire list from the memory and also clears the memory occupied by the list
+
+
+
+
+/**
+ * Inserts node at nth position in the list.
+ * @head     Pointer to node pointing at first node of the list
+ * @position Position where you want to insert new node.
+ * @data     Data inserted at the given position.
  */
-int deleteList()
+void insertAtN(node ** head, int position, int data)
 {
-    SinglyLinkedList *nextNode, *curNode;
-
-    if(head == NULL)
+    node *newNode, *temp;
+    int i;
+    
+    if(*head == NULL)
     {
-        return LIST_IS_EMPTY;
-    }
-
-    curNode = head;
-    while(curNode != NULL)
+        printf("\nOops! looks like list is empty. Please first create list.\n");
+    }   
+    else
     {
-        nextNode = curNode->next;
-        free(curNode);
-        curNode = nextNode;
+        if(position == 1)
+            insertAtBeginning(head, data);
+        else
+        {
+            //Moves to the desired position - 1
+            temp = *head;
+            for(i=1; i<position-1; i++)
+            {
+                temp = temp->next;
+                
+                if(temp == NULL)
+                    break;
+            }
+            
+            
+            //Checks for invalid position
+            if(temp == NULL)
+            {
+                printf("\nOops! can't insert node at the specified position. Try again.\n");
+            }
+            else
+            {
+                newNode = (node *)malloc(sizeof(node));
+                newNode->next = NULL;
+                newNode->data = data;
+                
+                newNode->next = temp->next; //Links previous node to newnode
+                temp->next = newNode; //Links newnode to next node
+                
+                
+                printf("\nYeah! node successfully inserted at %d position.\n", position);
+            }
+        }
     }
-
-    head = NULL;
-
-    return SUCCESS;
 }
 
-/*
- * Deletes or removes first node of the list.
+
+
+
+
+/**
+ * Deletes first node in the list and releases the memory occupied by it.
+ * @head Pointer to node pointing at first node of the list
  */
-int deleteAtBeginning()
+int deleteFirst(node ** head)
 {
-    SinglyLinkedList *startNode;
-
-    /*
-     * Check if the list is empty
-     */
-    if(head == NULL)
+    node * toDelete;
+    int data = -1;
+    
+    //Checks for empty list
+    if(*head == NULL)
     {
-        return LIST_IS_EMPTY;
+        printf("\nOops! can't delete from an empty list. Please first create list.\n");
     }
-
-    startNode = head;
-    head = head->next;
-
-    free(startNode);
-
-    return SUCCESS;
+    else
+    {
+        toDelete = *head;
+        
+        *head = (*head)->next;
+        
+        //Backup data and release resource occupied by toDelete
+        data = toDelete->data;
+        free(toDelete);
+        toDelete = NULL; //Always make this NULL to avoid dangling pointer situations
+        
+        printf("\nYeah! successfully deleted first node and freed %lu bytes.\n", sizeof(node));
+    }
+    
+    return data;
 }
 
-/*
- * Deletes or removes the last node of the list
+
+
+
+
+/**
+ * Deletes last node in the list and releases the memory occupied by it.
+ * @head Pointer to node pointing at first node of the list 
  */
-int deleteAtEnd()
+int deleteLast(node ** head)
 {
-    SinglyLinkedList *lastNode, *secondLastNode;
-
-    /*
-     * Check if the list is empty
-     */
-    if(head == NULL)
+    node *toDelete, *last;
+    int data = -1;
+    
+    //Checks for empty list
+    if(*head == NULL)
     {
-        return LIST_IS_EMPTY;
+        printf("\nOops! can't delete from an empty list. Please first create list.\n");
     }
-
-    /*
-     * Traverse to the last node
-     */
-    lastNode = head;
-    while(lastNode->next != NULL)
+    else
     {
-        secondLastNode = lastNode;
-        lastNode = lastNode->next;
+        //Moves to last node
+        last = *head;
+        toDelete = last->next;
+        while(toDelete->next != NULL)
+        {
+            last = last->next;
+            toDelete = toDelete->next;
+        }
+        
+        //Backup data and releases resource occupied by toDelete
+        data = toDelete->data;
+        free(toDelete);
+        toDelete = NULL;
+        
+        //Make sure now last node points to NULL
+        last->next = NULL;
+        
+        printf("\nYeah! successfully deleted last node and freed %lu bytes.\n", sizeof(node));
     }
-
-    free(lastNode);
-    secondLastNode->next = NULL;
-
-    return SUCCESS;
+    
+    return data;
 }
 
-/*
- * Deletes node from the list at specified position
+
+
+
+
+/**
+ * Deletes node from the list from specified position and releases the resource
+ * occupied by it.
+ * @head        Pointer to node pointing at first node of the list
+ * @position    Position which needs to be deleted from list
  */
-int deleteAtN(int position)
+int deleteAtN(node ** head, int position)
 {
-    SinglyLinkedList *nthNode, *temp;
-    int count;
-
-    /*
-     * Checks if the list is empty
-     */
-    if(head == NULL)
+    node *toDelete, *prev;
+    int i, data = -1;
+    
+    //Checks for empty list
+    if(*head == NULL)
     {
-        return LIST_IS_EMPTY;
+        printf("\nOops! can't delete from an empty list. Please first create list.\n");
     }
-
-    temp = head;
-
-    for(count=1; count<position-1 && temp!=NULL; count++)
+    else
     {
-        temp = temp->next;
+        //If delete position is first then let deleteFirst() handle this
+        if(position == 1)
+        {
+            return deleteFirst(head);
+        }
+            
+        //Moves to the desired position - 1
+        prev = *head;
+        for(i=1; i<position-1; i++)
+        {
+            prev = prev->next;
+            
+            if(prev == NULL)
+                break;
+        }
+        
+        //Checks for invalid position
+        if(prev == NULL || prev->next == NULL)
+        {
+            printf("\nOops! can't delete at specified position. Please try again.\n");
+        }
+        else
+        {
+            //Copies the address of node which is to be deleted
+            toDelete = prev->next; 
+            
+            //Backup data, maintain the link and releases resources occupied by toDelete
+            prev->next = toDelete->next; //Links previous node with the next node ahead of deleting node
+            data = toDelete->data;
+            free(toDelete);
+            toDelete = NULL; //To avoid dangling pointer
+            
+            printf("\nYeah! successfully deleted %d node and freed %lu bytes.\n", position, sizeof(node));
+        }
     }
-
-    if(temp == NULL)
-    {
-        return ERROR;
-    }
-
-    /*
-     * Creates a link from n-1 node to n+1 node and deletes nth node
-     */
-    nthNode = temp->next;
-    temp->next = nthNode->next;
-    free(nthNode);
-
-    return SUCCESS;
+    
+    return data;
 }
 
-/*
- * Returns the total number of nodes in the list
- */
-long count()
-{
-    long total = 0;
-    SinglyLinkedList *temp;
 
-    temp = head;
+
+
+
+/**
+ * Deletes all nodes from the list and releases the resources occupied by them.
+ * Or in general clears the list.
+ * @head Pointer to node pointing at first node of the list
+ */
+void deleteAll(node ** head)
+{
+    node *toDelete;
+    int count = 0;
+    
+    
+    //Run till the last node
+    while(*head != NULL)
+    {
+        //Copies the current node to toDelete
+        toDelete = *head;
+        *head = (*head)->next; //Move the head node ahead
+        
+        free(toDelete); //Releases resources
+        toDelete = NULL; //To avoid dangling pointer
+        
+        count++;
+    }
+    
+    printf("\nYeah, successfully deleted %d nodes and free %lu bytes.\n", count, (count * sizeof(node)));
+}
+
+
+
+
+
+/**
+ * Displays the content of the list sequentially.
+ * @head Pointer to node pointing at first node of the list
+ */
+void displayList(node ** head)
+{
+    node *temp = *head;
+    int count = 1;
+    
+    printf("---------------------------------------------\n");
+    printf("              DATA IN THE LIST\n");
+    printf("\n---------------------------------------------\n");
+    
+    //Runs till the end of list
     while(temp != NULL)
     {
-        total++;
+        printf("NODE %d => DATA %d\n", count, temp->data);
+        
         temp = temp->next;
+        count++;
     }
-
-    return total;
 }
 
-/*
- * Reverses the order of the list.
+
+
+
+
+/**
+ * Counts total number of nodes in the list.
+ * @head Pointer to node pointing at first node of the list
  */
-int reverseList()
+int count(node ** head)
 {
-    SinglyLinkedList *previousNode, *curNode;
-
-    /*
-     * Checks if the list is empty
-     */
-    if(head == NULL)
+    int count = 0;
+    node *temp = *head;
+    
+    //Runs till end of the list
+    while(temp != NULL)
     {
-        return LIST_IS_EMPTY;
+        count++;
+        temp = temp->next;   
     }
+    
+    return count;
+}
 
-    previousNode = head;
-    curNode = head->next;
-    head = head->next;
-    previousNode->next = NULL; //First node becomes last node
 
-    while(head != NULL)
+
+
+
+/**
+ * Searches for a specific data in the list. A linear search is performed to search
+ * data element in the list.
+ * @head Pointer to node pointing at first node of the list
+ * @data Data to be searched in the list
+ */
+int search(node ** head, int data)
+{
+    int index = -1;
+    node * temp;
+    
+    //Checks for an empry list
+    if(*head == NULL)
     {
-        head = head->next;
-        curNode->next = previousNode;
-
-        previousNode = curNode;
-        curNode = head;
+        printf("\nOops! looking for something in empty room. Please first create list.\n");
     }
+    else
+    {
+        index = 1;
+        //Runs till the end of list
+        temp = *head;
+        while(temp != NULL)
+        {
+            if(temp->data == data)
+            {
+                //Found element hence return its index
+                return index;
+            }
+            
+            temp = temp->next;
+            index++;
+        }
+    }
+    
+    return -1; //Not found
+}
 
-    head = previousNode; //Last node becomes the head node
 
-    return SUCCESS;
+
+
+
+/**
+ * Reverses the order of list.
+ * @head Pointer to node pointing at first node of the list
+ * @see To understand this concept more clearly visit
+ * http://www.codeforwin.in/2015/09/c-program-to-reverse-singly-linked-list.html
+ */
+void reverseList(node ** head)
+{
+    node *prev, *cur, *next;
+    
+    //Checks for empty list
+    if(*head == NULL)
+    {
+        printf("\nOops! I really can't reverse an empty list. Please first create list.\n");
+    }
+    else
+    {
+        prev = *head;
+        cur = (*head)->next;
+        
+        prev->next = NULL; //Make sure now first node is last node
+        //Runs till the end of list
+        while(cur != NULL)
+        {
+            next = cur->next; 
+            
+            cur->next = prev; 
+            prev = cur;
+            cur = next;
+        }
+        
+        *head = prev;
+        
+        printf("\nYeah! successfully reversed the order of list.\n");
+    }
+}
+
+
+
+
+
+/**
+ * Sorts the list in increasing order or say in ascending order of their elements.
+ * @head Pointer to node pointing at first node of the list
+ */
+void sortList(node ** head)
+{
+    //Yet to be implemented
+    printf("\nOops! I haven't added any logic to this.\n");
 }
